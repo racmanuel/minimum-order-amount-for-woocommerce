@@ -100,4 +100,66 @@ class Minimum_Order_Amount_For_Woocommerce_Admin {
 
 	}
 
+	/**
+ 	* Hook in and register a metabox to handle a theme options page and adds a menu item.
+	*/
+	function minimum_order_amount_for_woocommerce_options_cmb2() {
+
+		/**
+		 * Registers options page menu item and form.
+		 */
+		$cmb_options = new_cmb2_box( array(
+			'id'           => 'minimum_order_amount_for_woocommerce_options_cmb2',
+			'title'        => esc_html__( 'Minimum Order Amount for WooCommerce', 'cmb2' ),
+			'object_types' => array( 'options-page' ),
+
+			/*
+			* The following parameters are specific to the options-page box
+			* Several of these parameters are passed along to add_menu_page()/add_submenu_page().
+			*/
+
+			'option_key'      => 'minimum_order_amount_for_woocommerce_options', // The option key and admin menu page slug.
+			//'icon_url'        => 'dashicons-cart', // Menu icon. Only applicable if 'parent_slug' is left empty.
+			'menu_title'      => esc_html__( 'Minimum Order Amount for WooCommerce', 'cmb2' ), // Falls back to 'title' (above).
+			'parent_slug'     => 'options-general.php', // Make options page a submenu item of the themes menu.
+			'capability'      => 'manage_options', // Cap required to view options-page.
+			// 'position'        => 1, // Menu position. Only applicable if 'parent_slug' is left empty.
+			// 'admin_menu_hook' => 'network_admin_menu', // 'network_admin_menu' to add network-level options page.
+			// 'display_cb'      => false, // Override the options-page form output (CMB2_Hookup::options_page_output()).
+			'save_button'     => esc_html__( 'Save Settings', 'cmb2' ), // The text for the options-page save button. Defaults to 'Save'.
+			// 'disable_settings_errors' => true, // On settings pages (not options-general.php sub-pages), allows disabling.
+			// 'message_cb'      => 'yourprefix_options_page_message_callback',
+		) );
+
+		/**
+		 * Options fields ids only need
+		 * to be unique within this box.
+		 * Prefix is not needed.
+		 */
+
+		$cmb_options->add_field( array(
+			'name' => 'Settings',
+			'desc' => '',
+			'type' => 'title',
+			'id'   => 'minimum_order_amount_for_woocommerce_title',
+			'before_row' => 'cmb_after_row_cb',
+		) );
+		$cmb_options->add_field( array(
+			'name'    => esc_html__( 'Minimum Order Amount', 'cmb2' ),
+			'desc'    => esc_html__( 'Insert here the minimum order amount to show a button of go to checkout.', 'cmb2' ),
+			'id'      => 'minimum_order_amount_for_woocommerce_amount',
+			'type'    => 'text',
+			'attributes' => array(
+				'type' => 'number',
+				'pattern' => '\d*',
+			),
+			'sanitization_cb' => 'absint',
+			'escape_cb'       => 'absint',
+		) );
+
+		function cmb_after_row_cb() {
+			require_once __DIR__ . '/partials/minimum-order-amount-for-woocommerce-admin-display.php';
+		}
+	}
+	
 }
